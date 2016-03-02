@@ -16,21 +16,21 @@ function OnMult(n_a, n_b)
 	end do
 
 	!Initialize array b
-	do i=1,n_b*n_b
-		b(i) = i/n_b+1
+	do i=0,n_b*n_b - 1
+		b(i+1) = i/n_b + 1
 	end do
 
 	!Matrix Multiplication
-	do i=1,n_a
-		do j=1,n_b
+	do i=0,n_a - 1
+		do j=0,n_b - 1
 			temp = 0
-			do k=1,n_a
-				temp = temp + a((i-1)*n_a+k) * b((k-1)*n_b+k)
+			do k=0,n_a - 1
+				temp = temp + a(i*n_a+k+1) * b(k*n_b+k+1)
 			end do
-			c((i-1)*n_a+j) = temp
+			c(i*n_a+j+1) = temp
 		end do
 	end do
-	
+
 	!Print Result Matrix
 	print *, "Result matrix: "
 	do i=1,min(n_a*n_b, 10)
@@ -56,8 +56,8 @@ function OnMultLine(n_a, n_b)
 	end do
 
 	!Initialize array b
-	do i=1,n_b*n_b
-		b(i) = i/n_b+1
+	do i=0,n_b*n_b - 1
+		b(i+1) = i/n_b+1
 	end do
 
 	!Initialize array b
@@ -66,14 +66,14 @@ function OnMultLine(n_a, n_b)
 	end do
 					
 	!Matrix Multiplication
-	do i=1,n_a
-		do k=1,n_b
-			do j=1,n_b
-				c((i-1)*n_a+j) = c((i-1)*n_a+j) + a((i-1)*n_a+k) * b((k-1)*n_b+j)
+	do i=0,n_a - 1
+		do k=0,n_b - 1
+			do j=0,n_b - 1
+				c(i*n_a+j+1) = c(i*n_a+j+1) + a(i*n_a+k+1) * b(k*n_b+j+1)
 			end do
 		end do
 	end do
-	
+
 	!Print Result Matrix
 	print *, "Result matrix: "
 	do i=1,min(n_a*n_b, 10)
@@ -84,5 +84,5 @@ function OnMultLine(n_a, n_b)
 
 
 program ex1
-	print *, OnMultLine(10,10)
+	print *, OnMultLine(10, 10)
 end program ex1
