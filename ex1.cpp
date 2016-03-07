@@ -23,7 +23,6 @@ void OnMult(int m_ar, int m_br)
 	double *pha, *phb, *phc;
 	
 
-		
     pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
@@ -33,11 +32,9 @@ void OnMult(int m_ar, int m_br)
 			pha[i*m_ar + j] = (double)1.0;
 
 
-
 	for(i=0; i<m_br; i++)
 		for(j=0; j<m_br; j++)
 			phb[i*m_br + j] = (double)(i+1);
-
 
 
     Time1 = clock();
@@ -84,7 +81,7 @@ void OnMultLine(int m_ar, int m_br)
 	double *pha, *phb, *phc;
 	
 	// Creates matrix a, b and the result matrix c
-    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_br) * sizeof(double));
 
@@ -110,14 +107,14 @@ void OnMultLine(int m_ar, int m_br)
 	{	for( k=0; k<m_br; k++)
 		{	for( j=0; j<m_br; j++)
 			{	
-phc[i*m_ar+j] += pha[i*m_ar+k] * phb[k*m_br+j];
+				phc[i*m_ar+j] += pha[i*m_ar+k] * phb[k*m_br+j];
 			}
 			
 		}
 	}
 
 	//Stop the clock
-    	Time2 = clock();
+    Time2 = clock();
 
 	//Show results
 	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
@@ -235,58 +232,18 @@ int main (int argc, char *argv[])
 		n_lin += inc;
 		n_col = n_lin;
 	} while (n_lin <= 3000 || op == 0);
-	/*
-	op=1;
-	do {
-		cout << endl << "1. Multiplication" << endl;
-		cout << "2. Line Multiplication" << endl;
-		cout << "Selection?: ";
-		cin >>op;
-		if (op == 0)
-			break;
-		printf("Dimensions: lins cols ? ");
-   		cin >> lin >> col;
 
+	ret = PAPI_remove_event( EventSet, PAPI_L1_DCM );
+	if ( ret != PAPI_OK )
+		std::cout << "FAIL remove event" << endl; 
 
+	ret = PAPI_remove_event( EventSet, PAPI_L2_DCM );
+	if ( ret != PAPI_OK )
+		std::cout << "FAIL remove event" << endl; 
 
-		// Start counting
-		ret = PAPI_start(EventSet);
-		if (ret != PAPI_OK) cout << "ERRO: Start PAPI" << endl;
-
-		switch (op){
-			case 1: 
-				OnMult(lin, col);
-				break;
-			case 2:
-				OnMultLine(lin, col);
-				break;
-		}
-
-  		ret = PAPI_stop(EventSet, values);
-  		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
-  		printf("L1 DCM: %lld \n",values[0]);
-  		printf("L2 DCM: %lld \n",values[1]);
-
-		ret = PAPI_reset( EventSet );
-		if ( ret != PAPI_OK )
-			std::cout << "FAIL reset" << endl; 
-
-
-
-	}while (op != 0);
-	*/
-
-		ret = PAPI_remove_event( EventSet, PAPI_L1_DCM );
-		if ( ret != PAPI_OK )
-			std::cout << "FAIL remove event" << endl; 
-
-		ret = PAPI_remove_event( EventSet, PAPI_L2_DCM );
-		if ( ret != PAPI_OK )
-			std::cout << "FAIL remove event" << endl; 
-
-		ret = PAPI_destroy_eventset( &EventSet );
-		if ( ret != PAPI_OK )
-			std::cout << "FAIL destroy" << endl;
+	ret = PAPI_destroy_eventset( &EventSet );
+	if ( ret != PAPI_OK )
+		std::cout << "FAIL destroy" << endl;
 
 }
 
