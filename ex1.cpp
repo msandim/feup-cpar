@@ -23,7 +23,7 @@ void OnMult(int m_ar)
 	double *pha, *phb, *phc;
 	
 	// Initialize matrix:
-    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
@@ -37,9 +37,9 @@ void OnMult(int m_ar)
 			phb[i*m_ar + j] = (double)(i+1);
 
 
-    Time1 = clock();
+    	Time1 = clock();
 
-    // Do the multiplication:
+    	// Do the multiplication:
 	for(i=0; i<m_ar; i++)
 	{	for( j=0; j<m_ar; j++)
 		{	temp = 0;
@@ -81,7 +81,7 @@ void OnMultLine(int m_ar)
 	double *pha, *phb, *phc;
 	
 	// Creates matrix a, b and the result matrix c
-    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
@@ -114,7 +114,133 @@ void OnMultLine(int m_ar)
 	}
 
 	//Stop the clock
+    	Time2 = clock();
+
+	//Show results
+	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+	cout << st;
+
+	
+	//Print Result matrix (c)
+	cout << "Result matrix: " << endl;
+	for(i=0; i<1; i++)
+	{	for(j=0; j<min(10,m_ar); j++)
+			cout << phc[j] << " ";
+	}
+	cout << endl;
+
+	//unallocate space of the matrices
+	free(pha);
+	free(phb);
+	free(phc);
+}
+
+void OnMultParallel(int m_ar, int n_threads) 
+{
+	
+	SYSTEMTIME Time1, Time2;
+	
+	char st[100];
+	double temp;
+	int i, j, k;
+
+	double *pha, *phb, *phc;
+	
+	// Initialize matrix:
+    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			pha[i*m_ar + j] = (double)1.0;
+
+
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			phb[i*m_ar + j] = (double)(i+1);
+
+
+    	Time1 = clock();
+
+    	// Do the multiplication:
+	#pragma omp parallel for num_threads(4)
+	for(i=0; i<m_ar; i++)
+	{	for( j=0; j<m_ar; j++)
+		{	temp = 0;
+			for( k=0; k<m_ar; k++)
+			{	
+				temp += pha[i*m_ar+k] * phb[k*m_ar+j];
+			}
+			phc[i*m_ar+j]=temp;
+		}
+	}
+
+
+	// Measure the time and give the resulting matrix:
     Time2 = clock();
+	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+	cout << st;
+
+	cout << "Result matrix: " << endl;
+	for(i=0; i<1; i++)
+	{	for(j=0; j<min(10,m_ar); j++)
+			cout << phc[j] << " ";
+	}
+	cout << endl;
+
+    free(pha);
+    free(phb);
+    free(phc);
+}
+
+
+void OnMultLineParallel(int m_ar, int n_threads)
+{
+	SYSTEMTIME Time1, Time2;
+	
+	char st[100];
+	double temp;
+	int i, j, k;
+
+	double *pha, *phb, *phc;
+	
+	// Creates matrix a, b and the result matrix c
+    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+
+	//Initialize values of matrix a
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			pha[i*m_ar + j] = (double)1.0;
+
+	//Initialize values of matrix b
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			phb[i*m_ar + j] = (double)(i+1);
+
+	//Initialize values of matrix c
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			phc[i*m_ar + j] = (double)0.0;
+
+	//Start the clock
+	Time1 = clock();
+    
+	#pragma omp parallel for num_threads(4)
+	for(i=0; i<m_ar; i++)
+	{	for( k=0; k<m_ar; k++)
+		{	for( j=0; j<m_ar; j++)
+			{	
+				phc[i*m_ar+j] += pha[i*m_ar+k] * phb[k*m_ar+j];
+			}
+			
+		}
+	}
+
+	//Stop the clock
+    	Time2 = clock();
 
 	//Show results
 	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
@@ -216,6 +342,12 @@ int main (int argc, char *argv[])
 			case 2:
 				OnMultLine(matrixSize);
 				break;
+			case 3:
+				OnMultParallel(matrixSize);
+				break;
+			case 4:
+				OnMultLineParallel(matrixSize);
+				break;
 		}
 		
 		ret = PAPI_stop(EventSet, values);
@@ -242,7 +374,6 @@ int main (int argc, char *argv[])
 	ret = PAPI_destroy_eventset( &EventSet );
 	if ( ret != PAPI_OK )
 		std::cout << "FAIL destroy" << endl;
-
 }
 
 
