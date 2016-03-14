@@ -23,7 +23,7 @@ void OnMult(int m_ar)
 	double *pha, *phb, *phc;
 	
 	// Initialize matrix:
-    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
@@ -37,9 +37,9 @@ void OnMult(int m_ar)
 			phb[i*m_ar + j] = (double)(i+1);
 
 
-    	Time1 = clock();
+    Time1 = clock();
 
-    	// Do the multiplication:
+    // Do the multiplication:
 	for(i=0; i<m_ar; i++)
 	{	for( j=0; j<m_ar; j++)
 		{	temp = 0;
