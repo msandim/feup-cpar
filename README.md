@@ -2,4 +2,4 @@
 Paralell Computing
 
 Compile C++:
-g++ -O2 ex1.cpp -o ex1 -l papi -fopenmp
+g++ -O3 ex1.cpp -o ex1 -l papi -fopenmp
