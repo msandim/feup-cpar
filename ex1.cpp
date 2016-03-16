@@ -141,9 +141,6 @@ void OnMultLine(int m_ar)
 
 void OnMultParallel(int m_ar, int n_threads) 
 {
-	
-	SYSTEMTIME Time1, Time2;
-	
 	char st[100];
 	double temp;
 	int i, j, k;
@@ -164,11 +161,13 @@ void OnMultParallel(int m_ar, int n_threads)
 		for(j=0; j<m_ar; j++)
 			phb[i*m_ar + j] = (double)(i+1);
 
+	struct timespec start, finish;
+	double elapsed;
 
-    	Time1 = clock();
+	clock_gettime(CLOCK_MONOTONIC, &start);
 
-    // Do the multiplication:
-	#pragma omp parallel for num_threads(4)
+    	// Do the multiplication:
+	#pragma omp parallel for num_threads(n_threads)
 	for(i=0; i<m_ar; i++)
 	{	for( j=0; j<m_ar; j++)
 		{	temp = 0;
@@ -180,10 +179,12 @@ void OnMultParallel(int m_ar, int n_threads)
 		}
 	}
 
-
 	// Measure the time and give the resulting matrix:
-    Time2 = clock();
-	printf("%3.3f ", (double) (Time2 - Time1) / CLOCKS_PER_SEC);
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+	printf("%3.3f ", (double) elapsed);
 	fflush( stdout );
 
 	/*
@@ -202,8 +203,6 @@ void OnMultParallel(int m_ar, int n_threads)
 
 void OnMultLineParallel(int m_ar, int n_threads)
 {
-	SYSTEMTIME Time1, Time2;
-	
 	char st[100];
 	double temp;
 	int i, j, k;
@@ -230,10 +229,12 @@ void OnMultLineParallel(int m_ar, int n_threads)
 		for(j=0; j<m_ar; j++)
 			phc[i*m_ar + j] = (double)0.0;
 
-	//Start the clock
-	Time1 = clock();
+	struct timespec start, finish;
+	double elapsed;
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
     
-	#pragma omp parallel for num_threads(4)
+	#pragma omp parallel for num_threads(n_threads)
 	for(i=0; i<m_ar; i++)
 	{	for( k=0; k<m_ar; k++)
 		{	for( j=0; j<m_ar; j++)
@@ -244,11 +245,12 @@ void OnMultLineParallel(int m_ar, int n_threads)
 		}
 	}
 
-	//Stop the clock
-    	Time2 = clock();
+	// Measure the time and give the resulting matrix:
+	clock_gettime(CLOCK_MONOTONIC, &finish);
 
-	//Show results
-	printf("%3.3f ", (double) (Time2 - Time1) / CLOCKS_PER_SEC);
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+	printf("%3.3f ", (double) elapsed);
 	fflush( stdout );
 
 	/*
