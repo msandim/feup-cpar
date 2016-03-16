@@ -375,8 +375,6 @@ int main (int argc, char *argv[])
 		
 		matrixSize += inc;
 	} while (matrixSize <= final);
-
-	cout << endl;
 	
 	ret = PAPI_remove_event( EventSet, PAPI_L1_DCM );
 	if ( ret != PAPI_OK )
