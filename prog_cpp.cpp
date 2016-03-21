@@ -11,7 +11,7 @@ using namespace std;
 #define SYSTEMTIME clock_t
 
  
-void OnMult(int m_ar) 
+void OnMult(int m_ar, int debug) 
 {
 	
 	SYSTEMTIME Time1, Time2;
@@ -54,24 +54,25 @@ void OnMult(int m_ar)
 	}
 
 	// Measure the time and give the resulting matrix:
-    	Time2 = clock();
-	printf("C++,0,0,%d,%3.3f", m_ar, (double) (Time2 - Time1) / CLOCKS_PER_SEC);
+    Time2 = clock();
+	printf("C++,Mult,0,%d,%3.3f", m_ar, (double) (Time2 - Time1) / CLOCKS_PER_SEC);
 
-	/*
-	cout << "Result matrix: " << endl;
-	for(i=0; i<1; i++)
-	{	for(j=0; j<min(10,m_ar); j++)
-			cout << phc[j] << " ";
+	
+	if (debug == 1)
+	{
+		cout << "Result matrix: " << endl;
+		for(j=0; j<min(m_ar*m_ar, 10); j++)
+				cout << phc[j] << " ";
+		cout << endl;
 	}
-	cout << endl;
-	*/
+	
 	
     free(pha);
     free(phb);
     free(phc);
 }
 
-void OnMultLine(int m_ar)
+void OnMultLine(int m_ar, int debug)
 {
 	SYSTEMTIME Time1, Time2;
 	
@@ -81,27 +82,27 @@ void OnMultLine(int m_ar)
 
 	double *pha, *phb, *phc;
 	
-	// Creates matrix a, b and the result matrix c
+	// Creates matrix a, b and the result matrix c:
     pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
-	//Initialize values of matrix a
+	// Initialize values of matrix a:
 	for(i=0; i<m_ar; i++)
 		for(j=0; j<m_ar; j++)
 			pha[i*m_ar + j] = (double)1.0;
 
-	//Initialize values of matrix b
+	// Initialize values of matrix b:
 	for(i=0; i<m_ar; i++)
 		for(j=0; j<m_ar; j++)
 			phb[i*m_ar + j] = (double)(i+1);
 
-	//Initialize values of matrix c
+	// Initialize values of matrix c:
 	for(i=0; i<m_ar; i++)
 		for(j=0; j<m_ar; j++)
 			phc[i*m_ar + j] = (double)0.0;
 
-	//Start the clock
+	// Start the clock:
 	Time1 = clock();
     
 	for(i=0; i<m_ar; i++)
@@ -114,30 +115,29 @@ void OnMultLine(int m_ar)
 		}
 	}
 
-	//Stop the clock
+	// Stop the clock:
     Time2 = clock();
 
-	//Show results
-	printf("C++,1,0,%d,%3.3f", m_ar, (double) (Time2 - Time1) / CLOCKS_PER_SEC);
+	// Show results:
+	printf("C++,LineMult,0,%d,%3.3f", m_ar, (double) (Time2 - Time1) / CLOCKS_PER_SEC);
 
 	
-	//Print Result matrix (c)
-	/*
-	cout << "Result matrix: " << endl;
-	for(i=0; i<1; i++)
-	{	for(j=0; j<min(10,m_ar); j++)
-			cout << phc[j] << " ";
+	// Print Result matrix (c) - DEBUG:
+	if (debug == 1)
+	{
+		cout << "Result matrix: " << endl;
+		for(j=0; j<min(m_ar*m_ar, 10); j++)
+				cout << phc[j] << " ";
+		cout << endl;
 	}
-	cout << endl;
-	*/
-
-	//unallocate space of the matrices
+	
+	// Unallocate space of the matrices:
 	free(pha);
 	free(phb);
 	free(phc);
 }
 
-void OnMultParallel(int m_ar, int n_threads) 
+void OnMultParallel(int m_ar, int n_threads, int debug) 
 {
 	char st[100];
 	double temp;
@@ -164,7 +164,7 @@ void OnMultParallel(int m_ar, int n_threads)
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-    	// Do the multiplication:
+    // Do the multiplication:
 	#pragma omp parallel for num_threads(n_threads)
 	for(i=0; i<m_ar; i++)
 	{	for( j=0; j<m_ar; j++)
@@ -182,23 +182,23 @@ void OnMultParallel(int m_ar, int n_threads)
 
 	elapsed = (finish.tv_sec - start.tv_sec);
 	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-	printf("C++,0,%d,%d,%3.3f", n_threads, m_ar, elapsed);
+	printf("C++,Mult,%d,%d,%3.3f", n_threads, m_ar, elapsed);
 
-	/*
-	cout << "Result matrix: " << endl;
-	for(i=0; i<1; i++)
-	{	for(j=0; j<min(10,m_ar); j++)
-			cout << phc[j] << " ";
+	// Print Result matrix (c) - DEBUG:
+	if (debug == 1)
+	{
+		cout << "Result matrix: " << endl;
+		for(j=0; j<min(m_ar*m_ar, 10); j++)
+				cout << phc[j] << " ";
+		cout << endl;
 	}
-	cout << endl;
-	*/
 
     free(pha);
     free(phb);
     free(phc);
 }
 
-void OnMultLineParallel(int m_ar, int n_threads)
+void OnMultLineParallel(int m_ar, int n_threads, int debug)
 {
 	char st[100];
 	double temp;
@@ -207,7 +207,7 @@ void OnMultLineParallel(int m_ar, int n_threads)
 	double *pha, *phb, *phc;
 	
 	// Creates matrix a, b and the result matrix c
-    	pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
@@ -247,54 +247,21 @@ void OnMultLineParallel(int m_ar, int n_threads)
 
 	elapsed = (finish.tv_sec - start.tv_sec);
 	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-	printf("C++,1,%d,%d,%3.3f", n_threads, m_ar, elapsed);
-	
+	printf("C++,LineMult,%d,%d,%3.3f", n_threads, m_ar, elapsed);
 
-	/*
-	//Print Result matrix (c)
-	cout << "Result matrix: " << endl;
-	for(i=0; i<1; i++)
-	{	for(j=0; j<min(10,m_ar); j++)
-			cout << phc[j] << " ";
+	// Print Result matrix (c) - DEBUG:
+	if (debug == 1)
+	{
+		cout << "Result matrix: " << endl;
+		for(j=0; j<min(m_ar*m_ar, 10); j++)
+				cout << phc[j] << " ";
+		cout << endl;
 	}
-	cout << endl;
-	*/
 
-	//unallocate space of the matrices
+	// Unallocate space of the matrices
 	free(pha);
 	free(phb);
 	free(phc);
-}
-
-float produtoInterno(float *v1, float *v2, int col)
-{
-	int i;
-	float soma=0.0;	
-
-	for(i=0; i<col; i++)
-		soma += v1[i]*v2[i];
-	
-	return(soma);
-}
-
-void handle_error (int retval)
-{
-  printf("PAPI error %d: %s\n", retval, PAPI_strerror(retval));
-  exit(1);
-}
-
-void init_papi() 
-{
-  int retval = PAPI_library_init(PAPI_VER_CURRENT);
-  if (retval != PAPI_VER_CURRENT && retval < 0) {
-    printf("PAPI library version mismatch!\n");
-    exit(1);
-  }
-  if (retval < 0) handle_error(retval);
-
-  std::cout << "PAPI Version Number: MAJOR: " << PAPI_VERSION_MAJOR(retval)
-            << " MINOR: " << PAPI_VERSION_MINOR(retval)
-            << " REVISION: " << PAPI_VERSION_REVISION(retval) << "\n";
 }
 
 int main (int argc, char *argv[])
@@ -304,9 +271,9 @@ int main (int argc, char *argv[])
 	* threads -> 0 - seq, 1 - 1 thread, 2 - 2 threads, ...
 	*/
 
-	//Parse argv
-	if (argc != 6) {
-		cout << "Error expected 5 arguments: op threads initial final inc";
+	// Parse argv
+	if (argc != 7) {
+		cout << "Error expected 6 arguments: op threads initial final inc debug(1=on/0=off)";
 		return 1;
 	}
 
@@ -315,6 +282,7 @@ int main (int argc, char *argv[])
 	int initial = atoi(argv[3]);
 	int final = atoi(argv[4]);
 	int inc = atoi(argv[5]);
+	int debug = atoi(argv[6]);
 
 	char c;
 	
@@ -342,23 +310,22 @@ int main (int argc, char *argv[])
 	int matrixSize = initial;
 
 	do {
-		// Start counting
+		// Start counting:
 		ret = PAPI_start(EventSet);
 		if (ret != PAPI_OK) cout << "ERRO: Start PAPI" << endl;
 		
-
 		switch (op){
 			case 0:
 				if (n_threads == 0)
-					OnMult(matrixSize);
+					OnMult(matrixSize, debug);
 				else 
-					OnMultParallel(matrixSize, n_threads);
+					OnMultParallel(matrixSize, n_threads, debug);
 				break;
 			case 1:
 				if (n_threads == 0)
-					OnMultLine(matrixSize);
+					OnMultLine(matrixSize, debug);
 				else 
-					OnMultLineParallel(matrixSize, n_threads);
+					OnMultLineParallel(matrixSize, n_threads, debug);
 				break;
 		}
 		
@@ -366,6 +333,7 @@ int main (int argc, char *argv[])
   		if (ret != PAPI_OK) 
 			cout << "ERRO: Stop PAPI" << endl;
 
+		// Print the values of cache faults to csv format:
   		printf(",%lld,%lld\n",values[0], values[1]);
 		fflush( stdout );
 
@@ -373,6 +341,7 @@ int main (int argc, char *argv[])
 		if ( ret != PAPI_OK )
 			std::cout << "FAIL reset" << endl; 
 		
+		// Increment the matrix size:
 		matrixSize += inc;
 	} while (matrixSize <= final);
 	
