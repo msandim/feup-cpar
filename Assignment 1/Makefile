@@ -1,7 +1,7 @@
 all: prog_cpp prog_java
 
 prog_cpp:
-	g++ prog_cpp.cpp -O2 -o prog_cpp.o -l papi -fopenmp
+	g++ prog_cpp.cpp -o prog_cpp.o -l papi -fopenmp -O3
 	
 prog_java:
 	javac prog_java.java
