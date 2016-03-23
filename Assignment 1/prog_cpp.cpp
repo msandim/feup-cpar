@@ -8,14 +8,9 @@
 
 using namespace std;
 
-#define SYSTEMTIME clock_t
-
  
 void OnMult(int m_ar, int debug) 
 {
-	
-	SYSTEMTIME Time1, Time2;
-	
 	char st[100];
 	double temp;
 	int i, j, k;
@@ -37,7 +32,11 @@ void OnMult(int m_ar, int debug)
 			phb[i*m_ar + j] = (double)(i+1);
 
 
-    Time1 = clock();
+	// Start the clock:
+	struct timespec start, finish;
+	double elapsed;
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
 
     // Do the multiplication:
 	for(i=0; i<m_ar; i++)
@@ -54,8 +53,11 @@ void OnMult(int m_ar, int debug)
 	}
 
 	// Measure the time and give the resulting matrix:
-    Time2 = clock();
-	printf("C++,Mult,0,%d,%3.3f", m_ar, (double) (Time2 - Time1) / CLOCKS_PER_SEC);
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+	printf("C++,Mult,0,%d,%3.3f", m_ar, elapsed);
 
 	
 	if (debug == 1)
@@ -74,8 +76,6 @@ void OnMult(int m_ar, int debug)
 
 void OnMultLine(int m_ar, int debug)
 {
-	SYSTEMTIME Time1, Time2;
-	
 	char st[100];
 	double temp;
 	int i, j, k;
@@ -103,7 +103,10 @@ void OnMultLine(int m_ar, int debug)
 			phc[i*m_ar + j] = (double)0.0;
 
 	// Start the clock:
-	Time1 = clock();
+	struct timespec start, finish;
+	double elapsed;
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
     
 	for(i=0; i<m_ar; i++)
 	{	for( k=0; k<m_ar; k++)
@@ -115,11 +118,13 @@ void OnMultLine(int m_ar, int debug)
 		}
 	}
 
-	// Stop the clock:
-    Time2 = clock();
+	// Measure the time and give the resulting matrix:
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 
 	// Show results:
-	printf("C++,LineMult,0,%d,%3.3f", m_ar, (double) (Time2 - Time1) / CLOCKS_PER_SEC);
+	printf("C++,LineMult,0,%d,%3.3f", m_ar, elapsed);
 
 	
 	// Print Result matrix (c) - DEBUG:

@@ -24,7 +24,7 @@ public class prog_java {
 		for(i=0; i<n_a*n_a; i++)
 			b[i] = (double)(i/n_a+1);
 
-		start = System.currentTimeMillis();
+		start = System.nanoTime();
 
 		// Matrix Multiplication:
 		for(i=0; i<n_a; i++)
@@ -36,8 +36,8 @@ public class prog_java {
 			}
 
 		// Measure the time passed:
-		end = System.currentTimeMillis();
-		t1 = (end - start) / 1000.0;
+		end = System.nanoTime();
+		t1 = (end - start) / 1000000000.0;
 
 		// Output csv format into stdout:
 		System.out.println("Java,Mult,0," + n_a + "," + t1 + ",0,0");
@@ -78,7 +78,7 @@ public class prog_java {
 		for(i=0; i<c_lin*c_col; i++)
 			c[i] = (double)0.0;
 
-		start = System.currentTimeMillis();
+		start = System.nanoTime();
 
 		// Matrix multiplication:
 		for(i=0; i<n_a; i++)
@@ -87,8 +87,8 @@ public class prog_java {
 					c[i*n_a+j] += a[i*n_a+k] * b[k*n_a+j];
 
 		// Measure the time passed:
-		end = System.currentTimeMillis();
-		t1 = (end - start) / 1000.0;
+		end = System.nanoTime();
+		t1 = (end - start) / 1000000000.0;
 
 		// Output csv format into stdout:
 		System.out.println("Java,LineMult,0," + n_a + "," + t1 + ",0,0");
