@@ -26,9 +26,8 @@ csv:
 	
 	#alinea 2
 	./prog_cpp.o 1 0 600 3000 400 0 >> output.csv
-	./prog_cpp.o 1 0 4000 10000 2000 0 >> output.csv
 	java prog_java 1 600 3000 400 0 >> output.csv
-	java prog_java 1 4000 10000 2000 0 >> output.csv
+	./prog_cpp.o 1 0 4000 10000 2000 0 >> output.csv
 	
 	#alinea 3
 	./prog_cpp.o 0 1 600 3000 400 0 >> output.csv
