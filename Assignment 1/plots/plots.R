@@ -153,18 +153,18 @@ ggsave("plot3_3.pdf", width=4, height=3)
 p3.3
 
 # Cache faults
-data3 <- melt(data3[,c('N', 'alg', 'gflops', 'threads', 'ratioL1', 'ratioL2')], id=c('N', 'alg', 'gflops', 'threads'))
-names(data3)[names(data3) == 'variable'] <- 'cacheType'
-names(data3)[names(data3) == 'value'] <- 'cacheValue'
-data3$cacheType <- ifelse(data3$cacheType == "ratioL1", "L1", "L2")
+#data3 <- melt(data3[,c('N', 'alg', 'gflops', 'threads', 'ratioL1', 'ratioL2')], id=c('N', 'alg', 'gflops', 'threads'))
+#names(data3)[names(data3) == 'variable'] <- 'cacheType'
+#names(data3)[names(data3) == 'value'] <- 'cacheValue'
+#data3$cacheType <- ifelse(data3$cacheType == "ratioL1", "L1", "L2")
 
-p3.4 <- ggplot(data = filter(data3, alg == "Alg 1" & cacheType == "L1"), aes(x=N, y=cacheValue, colour=paste(threads, cacheType))) +
-  geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="Tamanho da matriz", y="Faults") +
-  scale_color_discrete(name=NULL) +
-  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot3_4.pdf", width=9, height=9)
-p3.4
+#p3.4 <- ggplot(data = filter(data3, alg == "Alg 1" & cacheType == "L1"), aes(x=N, y=cacheValue, colour=paste(threads, cacheType))) +
+#  geom_point(alpha=0.75) + geom_line(alpha=0.75) +
+#  labs(x="Tamanho da matriz", y="Faults") +
+#  scale_color_discrete(name=NULL) +
+#  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
+#ggsave("plot3_4.pdf", width=9, height=9)
+#p3.4
 
 
 # Ver um gráfico em cima do outro:
