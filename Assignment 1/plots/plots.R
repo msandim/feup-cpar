@@ -140,7 +140,7 @@ p3.2 <- ggplot(data = filter(data3, alg == "Alg 1"), aes(x=N, y=improv, color=fa
   labs(x="Tamanho da matriz", y="Improvement") +
   scale_color_discrete(name="Número de threads") +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot3_2.pdf", width=4, height=3)
+ggsave("plot3_2.pdf", width=5, height=3)
 p3.2
 
 # Alg2
@@ -149,7 +149,7 @@ p3.3 <- ggplot(data = filter(data3, alg == "Alg 2"), aes(x=N, y=improv, color=fa
   labs(x="Tamanho da matriz", y="Improvement") +
   scale_color_discrete(name="Número de threads") +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot3_3.pdf", width=4, height=3)
+ggsave("plot3_3.pdf", width=5, height=3)
 p3.3
 
 # Cache faults
