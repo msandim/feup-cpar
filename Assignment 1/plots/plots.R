@@ -62,15 +62,37 @@ p2.1 <- ggplot(data = filter(data2, alg == "Alg 1"), aes(x=N, y=cacheValue, colo
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="Tamanho da matriz", y="Data cache miss rate (%)") +
   scale_color_discrete(name=NULL) +
-  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot2_1.pdf", width=9, height=9)
+  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
+ggsave("plot2_1.pdf", width=4, height=3)
 
-p2.1 <- ggplot(data = filter(data2, alg == "Alg 2"), aes(x=N, y=cacheValue, colour=paste(alg, cacheType))) +
+p2.2 <- ggplot(data = filter(data2, alg == "Alg 2"), aes(x=N, y=cacheValue, colour=paste(alg, cacheType))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="Tamanho da matriz", y="Data cache miss rate (%)") +
   scale_color_discrete(name=NULL) +
-  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot2_2.pdf", width=9, height=9)
+  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
+ggsave("plot2_2.pdf", width=4, height=3)
+
+# 2.3 - For values larger than 3000:
+data2.3 <- rbind(cpp_line_3000, cpp_line_10000)
+data2.3 <- melt(data2.3[,c('N', 'alg', 'gflops', 'ratioL1', 'ratioL2')], id=c('N', 'alg', 'gflops'))
+names(data2.3)[names(data2.3) == 'variable'] <- 'cacheType'
+names(data2.3)[names(data2.3) == 'value'] <- 'cacheValue'
+data2.3$cacheType <- ifelse(data2.3$cacheType == "ratioL1", "L1", "L2")
+
+p2.3 <- ggplot(data = data2.3, aes(x=N, y=cacheValue, colour=paste(alg, cacheType))) +
+  geom_point(alpha=0.75) + geom_line(alpha=0.75) +
+  labs(x="Tamanho da matriz", y="Data cache miss rate (%)") +
+  scale_color_discrete(name=NULL) +
+  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
+ggsave("plot2_3.pdf", width=4, height=3)
+
+# 2.4 - GFLOPs for values larger than 3000
+p2.4 <- ggplot(data = data2.3, aes(x=N, y=gflops, color=alg)) +
+  geom_point(alpha=0.75) + geom_line(alpha=0.75) +
+  labs(x="Tamanho da matriz", y="GFLOP/s") +
+  scale_color_discrete(name=NULL) +
+  theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
+ggsave("plot2_4.pdf", width=4, height=3)
 
 # 3 - Parallel Stuff
 data3 <- rbind(cpp_mult_par, cpp_line_par)
@@ -80,7 +102,7 @@ p3.1 <- ggplot(data = filter(data3), aes(x=N, y=gflops, group=paste(alg,threads)
   scale_alpha_discrete(range = c(1.0, 0.4)) +
   geom_point(aes(type=alg)) + geom_line(aes(linetype=alg)) +
   labs(x="Tamanho da matriz", y="GFLOPs") +
-  scale_color_discrete(name=NULL) +
+  scale_color_discrete(name="Número de threads") +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
 ggsave("plot3_1.pdf", width=9, height=3)
 p3.1
@@ -118,7 +140,7 @@ p3.2 <- ggplot(data = filter(data3, alg == "Alg 1"), aes(x=N, y=improv, color=fa
   labs(x="Tamanho da matriz", y="Improvement") +
   scale_color_discrete(name="Número de threads") +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot3_2.pdf", width=9, height=3)
+ggsave("plot3_2.pdf", width=4, height=3)
 p3.2
 
 # Alg2
@@ -127,7 +149,7 @@ p3.3 <- ggplot(data = filter(data3, alg == "Alg 2"), aes(x=N, y=improv, color=fa
   labs(x="Tamanho da matriz", y="Improvement") +
   scale_color_discrete(name="Número de threads") +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
-ggsave("plot3_3.pdf", width=9, height=3)
+ggsave("plot3_3.pdf", width=4, height=3)
 p3.3
 
 # Cache faults
