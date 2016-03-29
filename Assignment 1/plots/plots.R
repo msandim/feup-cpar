@@ -5,7 +5,7 @@ library(RColorBrewer)
 library(reshape)
 
 # Open file:
-file <- read.csv("output.csv", header = FALSE)
+file <- read.csv("output_29_mar_O3_fcup.csv", header = FALSE)
 names(file) <- c("lang", "alg", "threads", "N", "time", "l1", "l2")
 
 # Number of operations:
@@ -37,15 +37,19 @@ data1 <- filter(data1)
 p1.1 <- ggplot(data1, aes(x=N, y=time, color=paste(lang, alg))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="N", y="Tempo de execução (s)") +
-  scale_color_discrete(name=NULL) +
+  scale_color_discrete(name=NULL, breaks=c("C++ Alg 1", "C++ Alg 2", "Java Alg 1", "Java Alg 2"),
+                       labels=c("C++ - Alg. 1", "C++ - Alg. 2", "Java - Alg. 1", "Java - Alg. 2")) +
+  guides(color=guide_legend(title=NULL)) +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")) +
 ggsave("plot1_1.pdf", width=9, height=3)
 
 # 1.2 - GFLOPs
 p1.2 <- ggplot(data1, aes(x=N, y=gflops, color=paste(lang, alg))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="N", y="GFPLOP/s") +
-  scale_color_discrete(name=NULL) +
+  labs(x="N", y="Performance (GFPLOP/s)") +
+  scale_color_discrete(name=NULL, breaks=c("C++ Alg 1", "C++ Alg 2", "Java Alg 1", "Java Alg 2"),
+                       labels=c("C++ - Alg. 1", "C++ - Alg. 2", "Java - Alg. 1", "Java - Alg. 2")) +
+  guides(fill=guide_legend(title=NULL)) +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
 ggsave("plot1_2.pdf", width=9, height=3)
 
@@ -60,15 +64,17 @@ data2$cacheType <- ifelse(data2$cacheType == "ratioL1", "L1", "L2")
 # 2.1 - Cache faults
 p2.1 <- ggplot(data = filter(data2, alg == "Alg 1"), aes(x=N, y=cacheValue, colour=paste(alg, cacheType))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="N", y="Data cache miss rate (%)") +
-  scale_color_discrete(name=NULL) +
+  labs(x="N", y="Cache misses/FLOP") +
+  scale_color_discrete(name=NULL, breaks=c("Alg 1 L1", "Alg 1 L2"),
+                       labels=c("Alg. 1 - L1", "Alg. 1 - L2")) +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
 ggsave("plot2_1.pdf", width=4, height=3)
 
 p2.2 <- ggplot(data = filter(data2, alg == "Alg 2"), aes(x=N, y=cacheValue, colour=paste(alg, cacheType))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="N", y="Data cache miss rate (%)") +
-  scale_color_discrete(name=NULL) +
+  labs(x="N", y="Cache misses/FLOP") +
+  scale_color_discrete(name=NULL, breaks=c("Alg 2 L1", "Alg 2 L2"),
+                       labels=c("Alg. 2 - L1", "Alg. 2 - L2")) +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
 ggsave("plot2_2.pdf", width=4, height=3)
 
@@ -82,15 +88,16 @@ data2.3$cacheType <- ifelse(data2.3$cacheType == "ratioL1", "L1", "L2")
 p2.3 <- ggplot(data = data2.3, aes(x=N, y=cacheValue, colour=paste(alg, cacheType))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="N", y="Data cache miss rate (%)") +
-  scale_color_discrete(name=NULL) +
+  scale_color_discrete(name=NULL, breaks=c("Alg 2 L1", "Alg 2 L2"),
+                       labels=c("Alg. 2 - L1", "Alg. 2 - L2")) +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
 ggsave("plot2_3.pdf", width=4, height=3)
 
 # 2.4 - GFLOPs for values larger than 3000
 p2.4 <- ggplot(data = data2.3, aes(x=N, y=gflops, color=alg)) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="N", y="GFLOP/s") +
-  scale_color_discrete(name=NULL) +
+  labs(x="N", y="Performance (GFPLOP/s)") +
+  scale_color_discrete(name=NULL, breaks=c("Alg 2"), labels=c("Alg. 2")) +
   theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
 ggsave("plot2_4.pdf", width=4, height=3)
 
@@ -101,7 +108,8 @@ data3 <- rbind(cpp_mult_par, cpp_line_par)
 p3.1 <- ggplot(data = filter(data3), aes(x=N, y=gflops, group=paste(alg,threads), color=factor(threads))) +
   scale_alpha_discrete(range = c(1.0, 0.4)) +
   geom_point(aes(type=alg)) + geom_line(aes(linetype=alg)) +
-  labs(x="N", y="GFLOPs") +
+  labs(x="N", y="Performance (GFPLOP/s)") +
+  scale_linetype_discrete(name="Algoritmo", breaks=c("Alg 1", "Alg 2"), labels=c("Alg. 1", "Alg. 2")) +
   scale_color_discrete(name="Número de threads") +
   theme(legend.position="right", legend.margin=unit(0.1,"cm"), plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
 ggsave("plot3_1.pdf", width=8, height=3)
@@ -137,7 +145,7 @@ getImprovement("Alg 2", 3000)
 # Alg1
 p3.2 <- ggplot(data = filter(data3, alg == "Alg 1"), aes(x=N, y=improv, color=factor(threads))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="N", y="Improvement") +
+  labs(x="N", y="Melhoria de desempenho") +
   scale_color_discrete(name="Número de threads") +
   theme(legend.position="bottom", legend.margin=unit(0.1,"cm"), plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
 ggsave("plot3_2.pdf", width=5, height=3)
@@ -146,7 +154,7 @@ p3.2
 # Alg2
 p3.3 <- ggplot(data = filter(data3, alg == "Alg 2"), aes(x=N, y=improv, color=factor(threads))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
-  labs(x="N", y="Improvement") +
+  labs(x="N", y="Melhoria de desempenho") +
   scale_color_discrete(name="Número de threads") +
   theme(legend.position="bottom", legend.margin=unit(0.1,"cm"), plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
 ggsave("plot3_3.pdf", width=5, height=3)
