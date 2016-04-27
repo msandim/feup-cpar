@@ -39,20 +39,21 @@ void sieveOfEratosthenes(long int n, int p) {
 	#pragma omp parallel num_threads(p)
 	while (k*k <= n) {
 		
+		#pragma omp for
 		// Mark all multiples of k between k*k and n
 		for (long int i = k*k; i <= n; i += k) {
 			arr[i-2] = false;
 		}
 
+		#pragma omp single
 		// Set k as the smallest urmarked number > k
 		for(long int i = k+1; i <= n; i++)
 		{
 			if (arr[i-2]) {
-				smallest = i;
+				k = i;
 				break;
 			}
 		}
-		k = smallest;
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &finish);
@@ -62,14 +63,14 @@ void sieveOfEratosthenes(long int n, int p) {
 	cout << "Elapsed time: " << elapsed << endl;
 
 	// Output
-	
+	/*
 	cout << "The prime numbers between 1 and " << n << " are:" << endl;
 	for (int i = 0; i < n-1; i++) {
 		if (arr[i])
 			cout << i+2 << "  ";
 	}
 	cout << endl;
-	
+	*/
 	
 }
 

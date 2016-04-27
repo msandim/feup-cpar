@@ -9,6 +9,7 @@ using namespace std;
 #define BLOCK_LOW(i,p,n) (i*n/p)
 #define BLOCK_HIGH(i,p,n) (BLOCK_LOW(i+1,p,n)-1)
 #define BLOCK_SIZE(i,p,n) (BLOCK_LOW(i+1,p,n)-BLOCK_LOW(i,p,n))
+#define BLOCK_OWNER(i,p,n) ((p*i)/n)
 
 
 
@@ -38,20 +39,21 @@ void sieveOfEratosthenes(long int n, int p) {
 	#pragma omp parallel num_threads(p)
 	while (k*k <= n) {
 		
+		#pragma omp for
 		// Mark all multiples of k between k*k and n
 		for (long int i = k*k; i <= n; i += k) {
 			arr[i-2] = false;
 		}
 
+		#pragma omp single
 		// Set k as the smallest urmarked number > k
 		for(long int i = k+1; i <= n; i++)
 		{
 			if (arr[i-2]) {
-				smallest = i;
+				k = i;
 				break;
 			}
 		}
-		k = smallest;
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &finish);
