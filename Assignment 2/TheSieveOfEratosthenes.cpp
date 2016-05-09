@@ -1,79 +1,63 @@
 #include <iostream>
-#include <bits/stdc++.h>
 #include <time.h>
 #include <papi.h>
+#include <bits/stdc++.h>
+
+#include "sequential.h"
+#include "parallel.h"
+#include "mpi.h"
+#include "openmp_and_mpi.h"
+
 using namespace std;
-
-void sieveOfEratosthenes(long int n) {
-	// Unmarked natural numbers 2, ..., n
-	
-	//bool arr[] too much storage
-	/*
-	bool arr[n-1];
-	memset(arr, true, sizeof(arr));
-	*/
-
-	//vector<bool> less speed
-	vector<bool> arr(n-1, true);
-
-	long int k = 2;
-	long int smallest = 3;
-
-	struct timespec start, finish;
-	double elapsed;
-
-	clock_gettime(CLOCK_MONOTONIC, &start);
-
-	while (k*k <= n) {
-		
-		// Mark all multiples of k between k*k and n
-		for (long int i = k*k; i <= n; i += k) {
-			arr[i-2] = false;
-		}
-
-		// Set k as the smallest urmarked number > k
-		for(long int i = k+1; i <= n; i++)
-		{
-			if (arr[i-2]) {
-				smallest = i;
-				break;
-			}
-		}
-		k = smallest;
-	}
-
-	clock_gettime(CLOCK_MONOTONIC, &finish);
-
-	elapsed = (finish.tv_sec - start.tv_sec);
-	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-	cout << "Elapsed time: " << elapsed << endl;
-
-	// Output
-	/*
-	cout << "The prime numbers between 1 and " << n << " are:" << endl;
-	for (int i = 0; i < n-1; i++) {
-		if (arr[i])
-			cout << i+2 << "  ";
-	}
-	cout << endl;
-	*/
-	
-}
 
 
 int main(int argc, const char* argv[]) {
 	
 	// Parse input
-	if (argc != 2) {
-		cerr << "Invalid input: Expected natural number\n";
+	if (argc < 4) {
+		cerr << "Invalid input: Expected atleast 3 arguments\n";
 		return 1;
 	}
 
-	long int n = atol(argv[1]);
+	// Mode: Sequential = 0, Parallel = 1, MPI = 2, OpenMP + MPI = 3
+	int mode = atoi(argv[1]);
+	if (mode < 0 || mode > 3) {
+		cerr << "Invalid input: Expected mode: Sequential = 0, Parallel = 1, MPI = 2, OpenMP + MPI = 3\n";
+		return 1;
+	}
+
+	// Improvment: Depends on algorithm
+	int improvment = atoi(argv[2]);
+	if (improvment < 0) {
+		cerr << "Invalid input: Improvment must be euqla or greater than 0\n";
+		return 1;
+	}
+
+	// N: Max Number
+	long int n = atol(argv[3]);
 	if (n < 2) {
 		cerr << "Invalid input: Expected natural number greater than 1\n";
 		return 1;
 	}
+
+	int p = 0;
+	// If parallelism is activated
+	if (mode != 0) {
+
+		if (argc != 5) {
+			cerr << "Invalid input: Expected 4 arguments\n";
+			return 1;
+		}
+
+		// P: Number of Processors
+		p = atoi(argv[4]);
+		if (n < 0) {
+			cerr << "Invalid input: Expected number of processors greater than 0\n";
+			return 1;
+		}
+
+	}
+	
 
 	// PAPI Setup
 	int EventSet = PAPI_NULL;
@@ -106,13 +90,31 @@ int main(int argc, const char* argv[]) {
 		cout << "ERRO: Start PAPI" << endl;
 
 
-	sieveOfEratosthenes(n);
+	// Algorithm Execution
+	switch (mode) {
+		case 0:
+			sequential(improvment, n);
+			break;
+		case 1:
+			parallel(improvment, n, p);
+			break;
+		case 2:
+			mpi(improvment, n, p);
+			break;
+		case 3:
+			openmp_and_mpi(improvment, n, p);
+			break;
+	}
+
 
 	// PAPI Stop
 	ret = PAPI_stop(EventSet, values);
   		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
 	
+	printf("Mode: %d\n", mode);
+	printf("Improvment: %d\n", improvment);
 	printf("N: %li\n", n);
+	printf("P: %d\n", p);
   	printf("L1 DCM: %lld \n",values[0]);
   	printf("L2 DCM: %lld \n",values[1]);
 
