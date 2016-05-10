@@ -1,7 +1,7 @@
 #ifndef MPI
 #define MPI
 
-void mpi(int improvment, long int n, int p) {
+void mpi(int improvement, long int n, int p) {
 	
 }
 

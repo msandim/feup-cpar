@@ -62,12 +62,12 @@ void dont_use_smallest(long int n) {
 }
 
 
-void sequential(int improvment, long int n) {
+void sequential(int improvement, long int n) {
 	struct timespec start, finish;
 	double elapsed;
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-	switch (improvment) {
+	switch (improvement) {
 		case 0:
 			use_vector_bit(n);
 			break;

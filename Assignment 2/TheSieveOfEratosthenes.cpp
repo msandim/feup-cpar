@@ -26,10 +26,10 @@ int main(int argc, const char* argv[]) {
 		return 1;
 	}
 
-	// Improvment: Depends on algorithm
-	int improvment = atoi(argv[2]);
-	if (improvment < 0) {
-		cerr << "Invalid input: Improvment must be euqla or greater than 0\n";
+	// Improvement: Depends on algorithm
+	int improvement = atoi(argv[2]);
+	if (improvement < 0) {
+		cerr << "Invalid input: Improvement must be euqla or greater than 0\n";
 		return 1;
 	}
 
@@ -93,16 +93,16 @@ int main(int argc, const char* argv[]) {
 	// Algorithm Execution
 	switch (mode) {
 		case 0:
-			sequential(improvment, n);
+			sequential(improvement, n);
 			break;
 		case 1:
-			parallel(improvment, n, p);
+			parallel(improvement, n, p);
 			break;
 		case 2:
-			mpi(improvment, n, p);
+			mpi(improvement, n, p);
 			break;
 		case 3:
-			openmp_and_mpi(improvment, n, p);
+			openmp_and_mpi(improvement, n, p);
 			break;
 	}
 
@@ -112,7 +112,7 @@ int main(int argc, const char* argv[]) {
   		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
 	
 	printf("Mode: %d\n", mode);
-	printf("Improvment: %d\n", improvment);
+	printf("Improvement: %d\n", improvement);
 	printf("N: %li\n", n);
 	printf("P: %d\n", p);
   	printf("L1 DCM: %lld \n",values[0]);
