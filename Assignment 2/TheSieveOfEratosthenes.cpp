@@ -29,7 +29,7 @@ int main(int argc, const char* argv[]) {
 	// Improvement: Depends on algorithm
 	int improvement = atoi(argv[2]);
 	if (improvement < 0) {
-		cerr << "Invalid input: Improvement must be euqla or greater than 0\n";
+		cerr << "Invalid input: Improvement must be equal or greater than 0\n";
 		return 1;
 	}
 
@@ -55,9 +55,7 @@ int main(int argc, const char* argv[]) {
 			cerr << "Invalid input: Expected number of processors greater than 0\n";
 			return 1;
 		}
-
 	}
-	
 
 	// PAPI Setup
 	int EventSet = PAPI_NULL;
@@ -106,19 +104,17 @@ int main(int argc, const char* argv[]) {
 			break;
 	}
 
-
 	// PAPI Stop
 	ret = PAPI_stop(EventSet, values);
   		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
 	
-	printf("Mode: %d\n", mode);
-	printf("Improvement: %d\n", improvement);
-	printf("N: %li\n", n);
-	printf("P: %d\n", p);
-  	printf("L1 DCM: %lld \n",values[0]);
-  	printf("L2 DCM: %lld \n",values[1]);
+	cout << "Mode: " << mode << endl;
+	cout << "Improvement: "<< improvement << endl;
+	cout << "N: " << n << endl;
+	cout << "P: " << p << endl;
+  	cout << "L1 DCM: " << values[0] << endl;
+  	cout << "L2 DCM: " << values[1] << endl;
 
-	
 	// PAPI Remove
 	ret = PAPI_reset( EventSet );
 	if ( ret != PAPI_OK )
