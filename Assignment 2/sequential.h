@@ -6,18 +6,18 @@
 #include "utils.h"
 using namespace std;
 
-void use_vector_bit(long int n) {
+void use_vector_bit(long long n) {
 	vector<bool> numbers(n-1, true);
-	long int k = 2;
-	long int smallest = 3;
+	long long k = 2;
+	long long smallest = 3;
 
 	while (k*k <= n) {
 		// Mark all multiples of k between k*k and n:
-		for (long int i = k*k; i <= n; i += k)
+		for (long long i = k*k; i <= n; i += k)
 			numbers[i-2] = false;
 
 		// Set k as the smallest urmarked number > k:
-		for(long int i = k+1; i <= n; i++)
+		for(long long i = k+1; i <= n; i++)
 		{
 			if (numbers[i-2]) {
 				smallest = i;
@@ -32,21 +32,21 @@ void use_vector_bit(long int n) {
 	Utils::printPrimes(numbers);
 }
 
-void use_unsigned_char(long int n)
+void use_unsigned_char(long long n)
 {
 	unsigned char * numbers;
 	numbers = (unsigned char*)malloc((n-1) * sizeof(unsigned char));
 	memset(numbers, 1, n-1);
-	long int k = 2;
-	long int smallest = 3;
+	long long k = 2;
+	long long smallest = 3;
 
 	while (k*k <= n) {
 		// Mark all multiples of k between k*k and n
-		for (long int i = k*k; i <= n; i += k) {
+		for (long long i = k*k; i <= n; i += k) {
 			numbers[i-2] = false;
 		}
 		// Set k as the smallest urmarked number > k
-		for(long int i = k+1; i <= n; i++)
+		for(long long i = k+1; i <= n; i++)
 		{
 			if (numbers[i-2]) {
 				smallest = i;
@@ -60,15 +60,15 @@ void use_unsigned_char(long int n)
 	//cout << "Number of primes: " << Utils::countPrimes(numbers) << endl;
 }
 
-void dont_use_smallest(long int n)
+void dont_use_smallest(long long n)
 {
 	vector<bool> numbers(n-1, true);
 
-	for (long int i = 2; i*i <= n; i++)
+	for (long long i = 2; i*i <= n; i++)
 	{
 		if (numbers[i-2])
 		{
-			for (long int j = i * i; j <= n-1; j += i)
+			for (long long j = i * i; j <= n-1; j += i)
 				numbers[j-2] = false;
 		}
 	}
@@ -79,7 +79,7 @@ void dont_use_smallest(long int n)
 }
 
 
-void sequential(int improvement, long int n)
+void sequential(int improvement, long long n)
 {
 	struct timespec start, finish;
 	double elapsed;

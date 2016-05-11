@@ -11,10 +11,18 @@
   #define omp_get_nested() 0
 #endif
 
-void none(long int n, int p)
+void none(long long n, int p)
 {
-	vector<bool> numbers(n-1, true);
-	long int k = 2;
+	//vector<bool> numbers(n-1, true);
+	cout << "Antes do array" << endl;
+	bool * numbers = new bool[n-1];
+	cout << "Depois do array" << endl;
+
+	memset(numbers, true, n-1);
+	cout << "Depois do memset" << endl;
+
+
+	long long k = 2;
 
 	//#pragma omp parallel num_threads(p)
 	while (k*k <= n) {
@@ -22,36 +30,32 @@ void none(long int n, int p)
 
 		#pragma omp parallel for num_threads(p)
 		// Mark all multiples of k between k*k and n
-		for (long int i = k*k; i <= n; i += k) {
-			
-			if (i%k != 0) {
-				i += k - i % k;
-			}
-			
-			
+		for (long long i = k*k; i <= n; i += k) {
 			numbers[i-2] = false;
 		}
 
 		#pragma omp master
 		// Set k as the smallest urmarked number > k
-		for(long int i = k+1; i <= n; i++)
+		for(long long i = k+1; i <= n; i++)
 		{
-			if (numbers[i-2]) {
+			if (numbers[i-2] == true) {
 				k = i;
 				break;
 			}
 		}
 	}
 
-	cout << "Number of primes: " << Utils::countPrimes(numbers) << endl;
-	Utils::printPrimes(numbers);
+	cout << "Number of primes: " << Utils::countPrimes(numbers, n-1) << endl;
+	delete [] numbers;
+
+	//Utils::printPrimes(numbers,  sizeof(numbers));
 }
 
 
 
 
 
-void parallel(int improvment, long int n, int p) {
+void parallel(int improvment, long long n, int p) {
 	struct timespec start, finish;
 	double elapsed;
 	clock_gettime(CLOCK_MONOTONIC, &start);

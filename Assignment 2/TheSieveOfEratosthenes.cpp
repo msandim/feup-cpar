@@ -2,6 +2,7 @@
 #include <time.h>
 #include <papi.h>
 #include <bits/stdc++.h>
+#include <string>
 
 #include "sequential.h"
 #include "parallel.h"
@@ -33,7 +34,7 @@ int main(int argc, const char* argv[]) {
 	}
 
 	// N: Max Number
-	long int n = atol(argv[3]);
+	long long n = stoll(argv[3]);
 	if (n < 2) {
 		cerr << "Invalid input: Expected natural number greater than 1\n";
 		return 1;

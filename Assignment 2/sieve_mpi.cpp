@@ -3,6 +3,7 @@
 #include <papi.h>
 #include <bits/stdc++.h>
 #include "mpi.h"
+#include "utils.h"
 
 #define BLOCK_LOW(i,n,p) ((i)*(n)/(p))
 #define BLOCK_HIGH(i,n,p) (BLOCK_LOW((i)+1,n,p)-1)
@@ -14,7 +15,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 	
-	int rank, size;
+	int rank, size, root = 0;
    
    	MPI_Init( &argc, &argv );
    	MPI_Comm_size( MPI_COMM_WORLD, &size );
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// N: Max Number
-	long int n = atol(argv[1]);
+	long long n = atol(argv[1]);
 	if (n < 2) {
 		cerr << "Invalid input: Expected natural number greater than 1\n";
 		return 1;
@@ -68,16 +69,65 @@ int main(int argc, char* argv[]) {
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
 
-	cout << size << endl;
-	cout << rank << endl;
-
-
 	// Algorithm Execution
-	
+	long long block_size = BLOCK_SIZE(rank, n-1, size);
+	long long block_low = BLOCK_LOW(rank, n-1, size);
+	long long block_high = BLOCK_HIGH(rank, n-1, size);
+
+	//vector<bool> numbers(block_size, true);
+	bool * numbers = new bool[block_size];
+	memset(numbers, true, block_size);
+
+	int offset = 2;
+	long long k = 2;
+	long long j;
 
 
+	// cout << "Rank: " << rank << "  Size: " << BLOCK_SIZE(rank, n, size) << "  Low: " << BLOCK_LOW(rank, n, size) << "  High: " << BLOCK_HIGH(rank, n, size) << endl;
+    
+	while (k*k <= n) {
+
+		if (k*k < block_low + offset) {
+			// Antes
+			if ((block_low + offset) % k == 0)
+				j = block_low + offset;
+			else  
+				j = block_low + offset + (k - ((block_low + offset) % k));
+
+		} else {
+			j = k*k;
+		}
+		
+		// Mark all multiples of k between k*k and n:
+		for (long long i = j; i <= block_high + offset; i += k) {
+			numbers[i - offset - block_low] = false;
+		}
 
 
+		// Set k as the smallest urmarked number > k:
+		if (rank == root) {
+
+			for(long long index = k-offset-block_low+1; index < block_size; index++) {
+				if (numbers[index]) {
+					k = block_low + index + offset;
+					break;
+				}
+			}
+		}
+
+		MPI_Bcast(&k, 1, MPI_INT, root, MPI_COMM_WORLD);
+	}
+
+	int total_primes = 0;
+	int block_primes = Utils::countPrimes(numbers, block_size);
+
+	MPI_Reduce(&block_primes, &total_primes, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);
+
+	if (rank == root) {
+		cout << "Number of primes: " << total_primes << endl;
+	}
+
+	delete [] numbers;
 
 
 	clock_gettime(CLOCK_MONOTONIC, &finish);
