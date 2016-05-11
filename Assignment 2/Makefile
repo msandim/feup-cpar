@@ -5,7 +5,7 @@ all: prog_cpp
 prog_cpp:
 	g++ $(CFLAGS) -O2 TheSieveOfEratosthenes.cpp -o sieve -l papi -fopenmp
 	mpiCC sieve_mpi.cpp -o sieve_mpi -l papi
-	mpiCC sieve_mpi_openmp.cpp -o sieve_mpi -l papi -fopenmp
+	mpiCC sieve_mpi_openmp.cpp -o sieve_mpi_openmp -l papi -fopenmp
 clean:
 	\rm *.o *.class *.csv
 
@@ -15,9 +15,9 @@ test:
 	#./sieve 0 1 10
 	#./sieve 0 2 10
 	./sieve 0 3 4294967296
-	#./sieve 1 0 4294967296 8
-	#mpirun -np 8 sieve_mpi 4294967296
-	#mpirun -np 2 sieve_mpi 4294967296 4
+	./sieve 1 0 4294967296 4
+	mpirun -np 4 sieve_mpi 4294967296
+	mpirun -np 2 sieve_mpi_openmp 4294967296 2
 	
 csv:
 	make all

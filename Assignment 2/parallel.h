@@ -14,13 +14,8 @@
 void none(long long n, int p)
 {
 	//vector<bool> numbers(n-1, true);
-	cout << "Antes do array" << endl;
 	bool * numbers = new bool[n-1];
-	cout << "Depois do array" << endl;
-
 	memset(numbers, true, n-1);
-	cout << "Depois do memset" << endl;
-
 
 	long long k = 2;
 
@@ -34,7 +29,7 @@ void none(long long n, int p)
 			numbers[i-2] = false;
 		}
 
-		#pragma omp master
+		//#pragma omp master
 		// Set k as the smallest urmarked number > k
 		for(long long i = k+1; i <= n; i++)
 		{
