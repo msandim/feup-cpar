@@ -1,15 +1,7 @@
 #ifndef PARALLEL
 #define PARALLEL
 
-#ifdef _OPENMP
-  #include <omp.h>
-  #define TRUE  1
-  #define FALSE 0
-#else
-  #define omp_get_thread_num() 0
-  #define omp_get_num_threads() 1
-  #define omp_get_nested() 0
-#endif
+//#include "omp.h"
 
 void none(long long n, int p)
 {
