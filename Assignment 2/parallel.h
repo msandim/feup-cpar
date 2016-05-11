@@ -1,7 +1,15 @@
 #ifndef PARALLEL
 #define PARALLEL
 
-
+#ifdef _OPENMP
+  #include <omp.h>
+  #define TRUE  1
+  #define FALSE 0
+#else
+  #define omp_get_thread_num() 0
+  #define omp_get_num_threads() 1
+  #define omp_get_nested() 0
+#endif
 
 void none(long int n, int p)
 {
@@ -15,23 +23,16 @@ void none(long int n, int p)
 		#pragma omp parallel for num_threads(p)
 		// Mark all multiples of k between k*k and n
 		for (long int i = k*k; i <= n; i += k) {
-			/*
+			
 			if (i%k != 0) {
 				i += k - i % k;
 			}
-			*/
-
-
-			cout << i << endl;
+			
+			
 			numbers[i-2] = false;
 		}
 
-		cout << "A MEIO ** " << endl;
-		Utils::printPrimes(numbers);
-		cout << "K: " << k << endl;
-		cout << "**" << endl;
-
-		#pragma omp single
+		#pragma omp master
 		// Set k as the smallest urmarked number > k
 		for(long int i = k+1; i <= n; i++)
 		{
