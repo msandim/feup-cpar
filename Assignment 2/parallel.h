@@ -1,20 +1,35 @@
 #ifndef PARALLEL
 #define PARALLEL
 
+
+
 void none(long int n, int p)
 {
 	vector<bool> numbers(n-1, true);
 	long int k = 2;
-	long int smallest = 3;
 
-	#pragma omp parallel num_threads(p)
+	//#pragma omp parallel num_threads(p)
 	while (k*k <= n) {
 		
-		#pragma omp for
+
+		#pragma omp parallel for num_threads(p)
 		// Mark all multiples of k between k*k and n
 		for (long int i = k*k; i <= n; i += k) {
+			/*
+			if (i%k != 0) {
+				i += k - i % k;
+			}
+			*/
+
+
+			cout << i << endl;
 			numbers[i-2] = false;
 		}
+
+		cout << "A MEIO ** " << endl;
+		Utils::printPrimes(numbers);
+		cout << "K: " << k << endl;
+		cout << "**" << endl;
 
 		#pragma omp single
 		// Set k as the smallest urmarked number > k
