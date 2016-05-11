@@ -1,1 +1,3 @@
 /sieve
+/sieve_mpi
+/sieve_mpi_openmp
