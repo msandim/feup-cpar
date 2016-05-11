@@ -2,58 +2,30 @@
 #include <time.h>
 #include <papi.h>
 #include <bits/stdc++.h>
-
-#include "sequential.h"
-#include "parallel.h"
-#include "openmp_and_mpi.h"
+#include "mpi.h"
 
 using namespace std;
 
 
-int main(int argc, const char* argv[]) {
+int main(int argc, char* argv[]) {
 	
+	int rank, size;
+   
+   	MPI_Init( &argc, &argv );
+   	MPI_Comm_size( MPI_COMM_WORLD, &size );
+   	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+
 	// Parse input
-	if (argc < 4) {
-		cerr << "Invalid input: Expected atleast 3 arguments\n";
-		return 1;
-	}
-
-	// Mode: Sequential = 0, Parallel = 1, MPI = 2, OpenMP + MPI = 3
-	int mode = atoi(argv[1]);
-	if (mode < 0 || mode > 3) {
-		cerr << "Invalid input: Expected mode: Sequential = 0, Parallel = 1, MPI = 2, OpenMP + MPI = 3\n";
-		return 1;
-	}
-
-	// Improvement: Depends on algorithm
-	int improvement = atoi(argv[2]);
-	if (improvement < 0) {
-		cerr << "Invalid input: Improvement must be equal or greater than 0\n";
+	if (argc != 2) {
+		cerr << "Invalid input: Expected n\n";
 		return 1;
 	}
 
 	// N: Max Number
-	long int n = atol(argv[3]);
+	long int n = atol(argv[1]);
 	if (n < 2) {
 		cerr << "Invalid input: Expected natural number greater than 1\n";
 		return 1;
-	}
-
-	int p = 0;
-	// If parallelism is activated
-	if (mode != 0) {
-
-		if (argc != 5) {
-			cerr << "Invalid input: Expected 4 arguments\n";
-			return 1;
-		}
-
-		// P: Number of Processors
-		p = atoi(argv[4]);
-		if (n < 0) {
-			cerr << "Invalid input: Expected number of processors greater than 0\n";
-			return 1;
-		}
 	}
 
 	// PAPI Setup
@@ -86,25 +58,33 @@ int main(int argc, const char* argv[]) {
 	if (ret != PAPI_OK) 
 		cout << "ERRO: Start PAPI" << endl;
 
+	struct timespec start, finish;
+	double elapsed;
+	clock_gettime(CLOCK_MONOTONIC, &start);
+
+
+	cout << size << endl;
+	cout << rank << endl;
+
 
 	// Algorithm Execution
-	switch (mode) {
-		case 0:
-			sequential(improvement, n);
-			break;
-		case 1:
-			parallel(improvement, n, p);
-			break;
-	}
+	
+
+
+
+
+
+
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+	cout << "Elapsed time: " << elapsed << endl;
 
 	// PAPI Stop
 	ret = PAPI_stop(EventSet, values);
   		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
 	
-	cout << "Mode: " << mode << endl;
-	cout << "Improvement: "<< improvement << endl;
 	cout << "N: " << n << endl;
-	cout << "P: " << p << endl;
   	cout << "L1 DCM: " << values[0] << endl;
   	cout << "L2 DCM: " << values[1] << endl;
 
@@ -125,5 +105,7 @@ int main(int argc, const char* argv[]) {
 	if ( ret != PAPI_OK )
 		cout << "FAIL destroy" << endl;
 
+	
+	MPI_Finalize();
 	cout << "************* END OF EXECUTION *************" << endl;
 }
