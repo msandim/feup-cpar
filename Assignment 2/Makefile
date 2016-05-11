@@ -14,9 +14,10 @@ test:
 	#./sieve 0 0 10
 	#./sieve 0 1 10
 	#./sieve 0 2 10
+	./sieve 0 3 4294967296
 	#./sieve 1 0 4294967296 8
 	#mpirun -np 8 sieve_mpi 4294967296
-	mpirun -np 2 sieve_mpi 4294967296 4
+	#mpirun -np 2 sieve_mpi 4294967296 4
 	
 csv:
 	make all
