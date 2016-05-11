@@ -64,7 +64,7 @@ int main(int argc, const char* argv[]) {
   	
 	ret = PAPI_library_init( PAPI_VER_CURRENT );
 	if ( ret != PAPI_VER_CURRENT )
-		std::cout << "FAIL" << endl;
+		cout << "FAIL" << endl;
 
 
 	ret = PAPI_create_eventset(&EventSet);
@@ -118,17 +118,19 @@ int main(int argc, const char* argv[]) {
 	// PAPI Remove
 	ret = PAPI_reset( EventSet );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL reset" << endl; 
+		cout << "FAIL reset" << endl; 
 
 	ret = PAPI_remove_event( EventSet, PAPI_L1_DCM );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL remove event" << endl; 
+		cout << "FAIL remove event" << endl; 
 
 	ret = PAPI_remove_event( EventSet, PAPI_L2_DCM );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL remove event" << endl; 
+		cout << "FAIL remove event" << endl; 
 
 	ret = PAPI_destroy_eventset( &EventSet );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL destroy" << endl;
+		cout << "FAIL destroy" << endl;
+
+	cout << "************* END OF EXECUTION *************" << endl;
 }

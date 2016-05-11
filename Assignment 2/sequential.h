@@ -27,8 +27,9 @@ void use_vector_bit(long int n) {
 		k = smallest;
 	}
 
-	// Count the number of primes:
-	cout << "Number of primes: " << countPrimes(numbers) << endl;
+	// Plot statistics:
+	cout << "Number of primes: " << Utils::countPrimes(numbers) << endl;
+	Utils::printPrimes(numbers);
 }
 
 void use_unsigned_char(long int n)
@@ -56,7 +57,7 @@ void use_unsigned_char(long int n)
 	}
 
 	// Count the number of primes:
-	cout << "Number of primes: " << countPrimes(numbers) << endl;
+	//cout << "Number of primes: " << Utils::countPrimes(numbers) << endl;
 }
 
 void dont_use_smallest(long int n)
@@ -68,12 +69,13 @@ void dont_use_smallest(long int n)
 		if (numbers[i-2])
 		{
 			for (long int j = i * i; j <= n-1; j += i)
-				numbers[j-2] = 0;
+				numbers[j-2] = false;
 		}
 	}
 
 	// Count the number of primes:
-	cout << "Number of primes: " << countPrimes(numbers) << endl;
+	cout << "Number of primes: " << Utils::countPrimes(numbers) << endl;
+	Utils::printPrimes(numbers);
 }
 
 

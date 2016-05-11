@@ -1,8 +1,9 @@
 #ifndef PARALLEL
 #define PARALLEL
 
-void none(long int n, int p) {
-	vector<bool> arr(n-1, true);
+void none(long int n, int p)
+{
+	vector<bool> numbers(n-1, true);
 	long int k = 2;
 	long int smallest = 3;
 
@@ -12,19 +13,22 @@ void none(long int n, int p) {
 		#pragma omp for
 		// Mark all multiples of k between k*k and n
 		for (long int i = k*k; i <= n; i += k) {
-			arr[i-2] = false;
+			numbers[i-2] = false;
 		}
 
 		#pragma omp single
 		// Set k as the smallest urmarked number > k
 		for(long int i = k+1; i <= n; i++)
 		{
-			if (arr[i-2]) {
+			if (numbers[i-2]) {
 				k = i;
 				break;
 			}
 		}
 	}
+
+	cout << "Number of primes: " << Utils::countPrimes(numbers) << endl;
+	Utils::printPrimes(numbers);
 }
 
 

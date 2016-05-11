@@ -8,7 +8,10 @@ clean:
 
 test:
 	make all
-	./sieve 0 0 200
+	./sieve 0 0 100
+	./sieve 0 1 100
+	./sieve 0 2 100
+	./sieve 1 0 100 4
 	
 csv:
 	make all
