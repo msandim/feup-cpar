@@ -22,8 +22,8 @@ int main(int argc, char* argv[]) {
    	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
 
 	// Parse input
-	if (argc != 2) {
-		cerr << "Invalid input: Expected n\n";
+	if (argc != 3) {
+		cerr << "Invalid input: Expected n and p\n";
 		return 1;
 	}
 
@@ -31,6 +31,13 @@ int main(int argc, char* argv[]) {
 	long long n = atol(argv[1]);
 	if (n < 2) {
 		cerr << "Invalid input: Expected natural number greater than 1\n";
+		return 1;
+	}
+
+	// N: Max Number
+	int p = atoi(argv[2]);
+	if (p < 0) {
+		cerr << "Invalid input: Expected number of processes greater than 0\n";
 		return 1;
 	}
 
@@ -66,7 +73,6 @@ int main(int argc, char* argv[]) {
 
 	struct timespec start, finish;
 	double elapsed;
-
 	if (rank == root) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 	}
@@ -100,6 +106,7 @@ int main(int argc, char* argv[]) {
 			j = k*k;
 		}
 		
+		#pragma omp parallel for num_threads(p)
 		// Mark all multiples of k between k*k and n:
 		for (long long i = j; i <= block_high + offset; i += k) {
 			numbers[i - offset - block_low] = false;
@@ -134,6 +141,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	delete [] numbers;
+
+	if (rank == root) {
+
+	}
+	
 
 	// PAPI Stop
 	ret = PAPI_stop(EventSet, values);
