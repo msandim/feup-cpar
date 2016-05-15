@@ -73,14 +73,14 @@ int main(int argc, char* argv[]) {
 
 	// Algorithm Execution
 	long long block_size = BLOCK_SIZE(rank, n-1, size);
-	long long block_low = BLOCK_LOW(rank, n-1, size);
-	long long block_high = BLOCK_HIGH(rank, n-1, size);
+	long long block_low = 2 + BLOCK_LOW(rank, n-1, size);
+	long long block_high = 2 + BLOCK_HIGH(rank, n-1, size);
 
 	//vector<bool> numbers(block_size, true);
 	bool * numbers = new bool[block_size];
 	memset(numbers, true, block_size);
 
-	int offset = 2;
+	//int offset = 2;
 	long long k = 2;
 	long long j;
 
@@ -89,29 +89,29 @@ int main(int argc, char* argv[]) {
     
 	while (k*k <= n) {
 
-		if (k*k < block_low + offset) {
+		if (k*k < block_low) {
 			// Antes
-			if ((block_low + offset) % k == 0)
-				j = block_low + offset;
+			if (block_low % k == 0)
+				j = block_low;
 			else  
-				j = block_low + offset + (k - ((block_low + offset) % k));
+				j = block_low + (k - (block_low % k));
 
 		} else {
 			j = k*k;
 		}
 		
 		// Mark all multiples of k between k*k and n:
-		for (long long i = j; i <= block_high + offset; i += k) {
-			numbers[i - offset - block_low] = false;
+		for (long long i = j; i <= block_high; i += k) {
+			numbers[i - block_low] = false;
 		}
 
 
 		// Set k as the smallest urmarked number > k:
 		if (rank == root) {
 
-			for(long long index = k - offset - block_low + 1; index < block_size; index++) {
-				if (numbers[index]) {
-					k = block_low + index + offset;
+			for(long long i = k + 1; i < block_high; i++) {
+				if (numbers[i - block_low]) {
+					k = i;
 					break;
 				}
 			}
@@ -129,8 +129,10 @@ int main(int argc, char* argv[]) {
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		elapsed = (finish.tv_sec - start.tv_sec);
 		elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+		cout << "N: " << n << endl;
 		cout << "Number of primes: " << total_primes << endl;
 		cout << "Elapsed time: " << elapsed << endl;
+		cout << "************* END OF EXECUTION *************" << endl;
 	}
 
 	delete [] numbers;
@@ -139,9 +141,8 @@ int main(int argc, char* argv[]) {
 	ret = PAPI_stop(EventSet, values);
   		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
 	
-	cout << "N: " << n << endl;
-  	cout << "L1 DCM: " << values[0] << endl;
-  	cout << "L2 DCM: " << values[1] << endl;
+  	//cout << "L1 DCM: " << values[0] << endl;
+  	//cout << "L2 DCM: " << values[1] << endl;
 
 	// PAPI Remove
 	ret = PAPI_reset( EventSet );
@@ -162,5 +163,4 @@ int main(int argc, char* argv[]) {
 
 	
 	MPI_Finalize();
-	cout << "************* END OF EXECUTION *************" << endl;
 }
