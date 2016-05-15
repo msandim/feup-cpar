@@ -10,7 +10,6 @@ void none(long long n, int p)
 	memset(numbers, true, n-1);
 
 	long long k = 2;
-	cout << "VOU COMEÇAR" << endl;
 
 	while (k*k <= n) {
 	
@@ -33,10 +32,6 @@ void none(long long n, int p)
 	cout << "Number of primes: " << Utils::countPrimes(numbers, n-1) << endl;
 	delete [] numbers;
 }
-
-
-
-
 
 void parallel(int improvment, long long n, int p) {
 	struct timespec start, finish;

@@ -12,9 +12,9 @@ clean:
 test:
 	make all
 	./sieve 0 3 33554432
-	./sieve 1 0 33554432 2
+	./sieve 1 0 33554432 8
 	mpirun -np 8 sieve_mpi 33554432
-	#mpirun -np 2 sieve_mpi_openmp 4294967296 400
+	mpirun -np 2 sieve_mpi_openmp 33554432 4
 	
 csv:
 	make all
