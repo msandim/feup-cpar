@@ -1,7 +1,7 @@
 #ifndef PARALLEL
 #define PARALLEL
 
-//#include "omp.h"
+#include "omp.h"
 
 void none(long long n, int p)
 {
@@ -10,18 +10,16 @@ void none(long long n, int p)
 	memset(numbers, true, n-1);
 
 	long long k = 2;
+	cout << "VOU COMEÇAR" << endl;
 
-	//#pragma omp parallel num_threads(p)
 	while (k*k <= n) {
-		
-
+	
 		#pragma omp parallel for num_threads(p)
 		// Mark all multiples of k between k*k and n
 		for (long long i = k*k; i <= n; i += k) {
 			numbers[i-2] = false;
 		}
 
-		//#pragma omp master
 		// Set k as the smallest urmarked number > k
 		for(long long i = k+1; i <= n; i++)
 		{
@@ -34,8 +32,6 @@ void none(long long n, int p)
 
 	cout << "Number of primes: " << Utils::countPrimes(numbers, n-1) << endl;
 	delete [] numbers;
-
-	//Utils::printPrimes(numbers,  sizeof(numbers));
 }
 
 

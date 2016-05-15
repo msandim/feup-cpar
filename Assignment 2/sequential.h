@@ -57,7 +57,6 @@ void use_bool_array_bit(long long n) {
 
 	// Plot statistics:
 	cout << "Number of primes: " << Utils::countPrimes(numbers, n-1) << endl;
-	//Utils::printPrimes(numbers, n-1);
 }
 
 void use_unsigned_char(long long n)

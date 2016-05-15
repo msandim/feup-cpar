@@ -111,6 +111,11 @@ public:
 		cout << endl;
 	}
 
+	static void printLineData(long long numberOfPrimes)
+	{
+		
+	}
+
 
 };
 

@@ -11,28 +11,19 @@ clean:
 
 test:
 	make all
-	./sieve 0 3 4294967296
-	./sieve 1 0 4294967296 2
-	#mpirun -np 8 sieve_mpi 4294967296
-	#mpirun -np 2 sieve_mpi_openmp 4294967296 4
+	./sieve 0 3 33554432
+	./sieve 1 0 33554432 2
+	mpirun -np 8 sieve_mpi 33554432
+	#mpirun -np 2 sieve_mpi_openmp 4294967296 400
 	
 csv:
 	make all
 	#alinea 1
-	./prog_cpp.o 0 0 600 3000 400 0 > output.csv
-	java prog_java 0 600 3000 400 0 >> output.csv
-	
+	for n in 25 26 27 28 29 30 31 32 ; do \
+    	#./sieve 0 3 $$n ; \
+    	echo $$((2 ** $$n)) ; \
+		#echo $$(( 2 ** $$n )) ; \
+    done
 	#alinea 2
-	./prog_cpp.o 1 0 600 3000 400 0 >> output.csv
-	java prog_java 1 600 3000 400 0 >> output.csv
-	./prog_cpp.o 1 0 4000 10000 2000 0 >> output.csv
 	
 	#alinea 3
-	./prog_cpp.o 0 1 600 3000 400 0 >> output.csv
-	./prog_cpp.o 0 2 600 3000 400 0 >> output.csv
-	./prog_cpp.o 0 3 600 3000 400 0 >> output.csv
-	./prog_cpp.o 0 4 600 3000 400 0 >> output.csv
-	./prog_cpp.o 1 1 600 3000 400 0 >> output.csv
-	./prog_cpp.o 1 2 600 3000 400 0 >> output.csv
-	./prog_cpp.o 1 3 600 3000 400 0 >> output.csv
-	./prog_cpp.o 1 4 600 3000 400 0 >> output.csv

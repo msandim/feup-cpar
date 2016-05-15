@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
 		// Set k as the smallest urmarked number > k:
 		if (rank == root) {
 
-			for(long long index = k-offset-block_low+1; index < block_size; index++) {
+			for(long long index = k - offset - block_low + 1; index < block_size; index++) {
 				if (numbers[index]) {
 					k = block_low + index + offset;
 					break;
