@@ -18,9 +18,7 @@ test:
 	
 csv:
 	make all
-	for p in 1 2 3 4 5 6 7 8; do \
-		mpirun --hostfile hostfile -np $$p sieve_mpi 32; \
-	done; \
+	mpirun --hostfile hostfile -np 16 sieve_mpi 32
 
 csv-feup:
 	make all
@@ -42,8 +40,8 @@ csv-feup:
 	#	done; \
 	#done; \
 	#alinea 3 with openmp
-	for p in 1 2 3 4 5 6 7 8; do \
-		for t in 0 1 2 3 4 5 6 7 8; do \
+	for p in 16; do \
+		for t in 1 2; do \
 			for n in 25 26 27 28 29 30 31 32; do \
 				mpirun --hostfile hostfile -np $$p sieve_mpi_openmp $$n $$t >> output.csv; \
 			done; \
