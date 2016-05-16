@@ -50,7 +50,7 @@ int main(int argc, const char* argv[]) {
 			return 1;
 		}
 
-		// P: Number of Threads
+		// P: Number of Processors
 		p = atoi(argv[4]);
 		if (n < 0) {
 			cerr << "Invalid input: Expected number of processors greater than 0\n";

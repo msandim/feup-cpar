@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 	// new_n = 2^n
 	long long n = pow(2,exponent);
 
-	// P: Number of threads
+	// P: Number of processes
 	int p = atoi(argv[2]);
 	if (p < 0) {
 		cerr << "Invalid input: Expected number of processes greater than 0\n";

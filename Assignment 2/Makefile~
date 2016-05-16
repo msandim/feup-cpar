@@ -24,7 +24,7 @@ csv:
 
 csv-feup:
 	make all
-	echo "" > output_mpi_mp.csv
+	echo "" > output.csv
 	#alinea 1
 	#for n in 25 26 27 28 29 30 31 32; do \
 	#	./sieve 0 3 $$n >> output.csv; \
