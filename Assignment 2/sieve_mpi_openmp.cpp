@@ -28,13 +28,15 @@ int main(int argc, char* argv[]) {
 	}
 
 	// N: Max Number
-	long long n = atol(argv[1]);
-	if (n < 2) {
-		cerr << "Invalid input: Expected natural number greater than 1\n";
+	long long exponent = atol(argv[1]);
+	if (exponent < 1) {
+		cerr << "Invalid input: 2^N must equal or superior to 1\n";
 		return 1;
 	}
+	// new_n = 2^n
+	long long n = pow(2,exponent);
 
-	// N: Max Number
+	// P: Number of processes
 	int p = atoi(argv[2]);
 	if (p < 0) {
 		cerr << "Invalid input: Expected number of processes greater than 0\n";
@@ -147,9 +149,6 @@ int main(int argc, char* argv[]) {
 	// PAPI Stop
 	ret = PAPI_stop(EventSet, values);
   		if (ret != PAPI_OK) cout << "ERRO: Stop PAPI" << endl;
-	
-  	//cout << "L1 DCM: " << values[0] << endl;
-  	//cout << "L2 DCM: " << values[1] << endl;
 
 	// PAPI Remove
 	ret = PAPI_reset( EventSet );

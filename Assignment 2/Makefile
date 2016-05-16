@@ -11,10 +11,10 @@ clean:
 
 test:
 	make all
-	./sieve 0 3 33554432
-	./sieve 1 0 33554432 8
-	mpirun -np 8 sieve_mpi 33554432
-	mpirun -np 2 sieve_mpi_openmp 33554432 4
+	./sieve 0 3 25
+	./sieve 1 0 25 8
+	mpirun -np 8 sieve_mpi 25
+	mpirun -np 2 sieve_mpi_openmp 25 4
 	
 csv:
 	make all

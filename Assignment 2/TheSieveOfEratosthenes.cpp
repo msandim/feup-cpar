@@ -6,7 +6,6 @@
 
 #include "sequential.h"
 #include "parallel.h"
-#include "openmp_and_mpi.h"
 
 using namespace std;
 
@@ -34,11 +33,13 @@ int main(int argc, const char* argv[]) {
 	}
 
 	// N: Max Number
-	long long n = stoll(argv[3]);
-	if (n < 2) {
-		cerr << "Invalid input: Expected natural number greater than 1\n";
+	long long exponent = stoll(argv[3]);
+	if (exponent < 1) {
+		cerr << "Invalid input: 2^N must equal or superior to 1\n";
 		return 1;
 	}
+	// new_n = 2^n
+	long long n = pow(2,exponent);
 
 	int p = 0;
 	// If parallelism is activated
@@ -106,8 +107,6 @@ int main(int argc, const char* argv[]) {
 	cout << "Improvement: "<< improvement << endl;
 	cout << "N: " << n << endl;
 	cout << "P: " << p << endl;
-  	cout << "L1 DCM: " << values[0] << endl;
-  	cout << "L2 DCM: " << values[1] << endl;
 
 	// PAPI Remove
 	ret = PAPI_reset( EventSet );
