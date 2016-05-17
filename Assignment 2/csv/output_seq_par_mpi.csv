@@ -1,4 +1,4 @@
-alg,n,processos,threads,primos,tempo
+alg,n,proc,threads,primes,time
 0,25,0,0,2063689,0.252646
 0,26,0,0,3957809,0.537588
 0,27,0,0,7603553,1.14543
