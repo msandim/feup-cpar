@@ -7,21 +7,20 @@ library(ggplot2)
 #options(digits)
 
 # Import:
-data_general <- tbl_df(read.csv("csv/output_seq_par_mpi.csv"))
-data_mpi_mp <- tbl_df(read.csv("csv/output_mpi_mp.csv"))
-
-data_general$alg <- factor(data_general$alg)
-data_mpi_mp$alg <- factor(data_mpi_mp$alg)
-data_general$threads <- factor(data_general$threads)
-data_mpi_mp$threads <- factor(data_mpi_mp$threads)
-data_general$proc <- factor(data_general$proc)
-data_mpi_mp$proc <- factor(data_mpi_mp$proc)
+data_general <- tbl_df(read.csv("csv/output.csv"))
 
 # Calculate Speedup:
 sequential_times <- data_general %>% filter(alg == 0) %>% `$`(time)
 data_general <- data_general %>% mutate(Speedup = sequential_times / time)
-data_mpi_mp <- data_mpi_mp %>% mutate(Speedup = sequential_times / time)
 rm(sequential_times)
+
+# Calcula efficiency:
+data_general <- data_general %>% mutate(Efficiency = Speedup / threads)
+
+# Transform in factors:
+data_general$alg <- factor(data_general$alg)
+data_general$threads <- factor(data_general$threads)
+data_general$proc <- factor(data_general$proc)
 
 # Grafico global
 data <- data_general %>% filter(alg == 0 | (alg == 1 & threads == 8) | (alg == 2 & proc == 16))
@@ -45,26 +44,32 @@ ggplot(data, aes(x=n, y=Speedup, color=proc)) +
   labs(x="N", y="Speedup")
 ggsave("plots/plot_mpi.pdf", width=4*1.5, height=3*1.5)
 
+data <- data_general %>% filter(alg == 1)
+ggplot(data, aes(x=n, y=Efficiency, color=proc)) +
+  geom_point(alpha=0.75) + geom_line(alpha=0.75, size=0.2) +
+  labs(x="N", y="Speedup")
+ggsave("plots/plot_mpi.pdf", width=4*1.5, height=3*1.5)
+
 # Gráfico do MPI/MP - SpeedUp
-ggplot(data_mpi_mp %>% filter(proc == 4), aes(x=n, y=Speedup, color=threads)) +
+ggplot(data_general %>% filter(alg == 3 & proc == 4), aes(x=n, y=Speedup, color=threads)) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="N", y="Speedup") +
   guides(color=guide_legend(title="Nº de\nthreads")) +
 ggsave("plots/plot_hybrid_4.pdf", width=4*1.5, height=3*1.5)
 
-ggplot(data_mpi_mp %>% filter(proc == 8), aes(x=n, y=Speedup, color=threads)) +
+ggplot(data_general %>% filter(alg == 3 & proc == 8), aes(x=n, y=Speedup, color=threads)) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="N", y="Speedup") +
   guides(color=guide_legend(title="Nº de\nthreads")) +
 ggsave("plots/plot_hybrid_8.pdf", width=4*1.5, height=3*1.5)
 
-ggplot(data_mpi_mp %>% filter(proc == 12), aes(x=n, y=Speedup, color=threads)) +
+ggplot(data_general %>% filter(alg == 3 & proc == 12), aes(x=n, y=Speedup, color=threads)) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="N", y="Speedup") +
   guides(color=guide_legend(title="Nº de\nthreads")) +
 ggsave("plots/plot_hybrid_12.pdf", width=4*1.5, height=3*1.5)
 
-ggplot(data_mpi_mp %>% filter(proc == 16), aes(x=n, y=Speedup, color=threads)) +
+ggplot(data_general %>% filter(alg == 3 & proc == 16), aes(x=n, y=Speedup, color=threads)) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="N", y="Speedup") +
   guides(color=guide_legend(title="Nº de\nthreads")) +
