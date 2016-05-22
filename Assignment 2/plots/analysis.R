@@ -99,15 +99,17 @@ ggsave("plots/plot_mp_speed.pdf", width=9, height=3)
 data <- data_general %>% filter(alg == 2 & as.numeric(proc) %% 2 == 0)
 ggplot(data, aes(x=n, y=Speedup, color=proc)) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75, size=0.2) +
-  labs(x="i", y="Speedup)") +
+  labs(x="i", y="Speedup") +
   guides(color=guide_legend(title="Nº de\nprocessos"))
 ggsave("plots/plot_mpi_speed.pdf", width=9, height=3)
 
 #### Geral
-ggplot(data_general %>% filter(alg == 3 & (as.numeric(threads) %% 2 == 0)), aes(x=n, y=Speedup, color=paste(sprintf("%02d", proc), threads, sep=" / "))) +
+data <- data_general %>% filter(alg == 3 & (as.numeric(threads) %% 2 == 0))
+ggplot(data, aes(x=n, y=Speedup, color=paste(sprintf("%02d", proc), threads, sep=" / "))) +
   geom_point(alpha=0.75) + geom_line(alpha=0.75) +
   labs(x="i", y="Speedup") +
   guides(color=guide_legend(title="Nº de processos/\nthreads")) +
+  scale_y_continuous(breaks = round(seq(min(data$Speedup), max(data$Speedup), by = 1.0),1))
   #(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.justification=c(1,0.5), legend.position=c(1,0.5))
   ggsave("plots/plot_hybrid_speed.pdf", width=9, height=3)
 
