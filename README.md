@@ -1,5 +1,6 @@
-# feup-cpar
-Paralell Computing
+# Paralell Computing - Assignments
 
-Compile C++:
-g++ -O3 ex1.cpp -o ex1 -l papi -fopenmp
+1. Matrix Product parallelization with shared memory (OpenMP)
+2. Sieve of Eratosthenes parallelization with shared memory (OpenMP) and distributed memory (OpenMPI)
+
+For more information check the papers in each assignment folder.
